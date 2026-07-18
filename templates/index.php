@@ -4,9 +4,9 @@ style('globalrandom', 'style');
 ?>
 <div id="globalrandom-wrapper">
     <iframe id="globalrandom-frame"
-            src="<?php p($_['embedUrl']); ?>"
-            title="GLOBAL RANDOM"
-            allow="autoplay; encrypted-media; clipboard-write"
+            src="<?php p($_['iframeSrc']); ?>"
+            title="GLOBAL RANDOM — Democracy of Sound"
+            allow="autoplay; fullscreen"
             allowfullscreen>
     </iframe>
 </div>
