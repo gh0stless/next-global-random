@@ -3,23 +3,25 @@
       xsi:noNamespaceSchemaLocation="https://apps.nextcloud.com/schema/apps/info.xsd">
     <id>globalrandom</id>
     <name>GLOBAL RANDOM</name>
-    <summary>GLOBAL RANDOM — Democracy of Sound, eingebettet in Nextcloud</summary>
-    <description><![CDATA[Bettet die bestehende GLOBAL-RANDOM-Webinstallation (echter Zufall statt algorithmischer Kuratierung) unverändert per Iframe in Nextcloud ein. Reine Hülle, keine Änderung an der Original-App.]]></description>
-    <version>0.1.0</version>
-    <licence>agpl</licence>
-    <author>Andreas S.</author>
+    <summary>Democracy of Sound — echte Zufallsmusik aus 247 Ländern</summary>
+    <description><![CDATA[Bindet die GLOBAL-RANDOM-Netzinstallation ("Democracy of Sound") in Nextcloud ein: eine self-contained Single-File-Anwendung, die echten, fairness-korrigierten Zufall gegen algorithmische Musikkuration setzt. Spielt Musik aus 247 Ländern/Territorien via MusicBrainz + Spotify, übersetzt Titel live in bis zu 87 Sprachen.
+
+Diese App ist eine reine Hülle (Iframe-Einbindung) — die eigentliche Anwendung bleibt unverändert und wird nicht durch Nextcloud selbst modifiziert.]]></description>
+    <version>0.1.1</version>
+    <licence>AGPL-3.0-or-later</licence>
+    <author>Andreas S. (gh0stless)</author>
     <namespace>GlobalRandom</namespace>
     <category>multimedia</category>
     <website>https://crazy-midi.de/global-random/</website>
+    <bugs>https://crazy-midi.de/global-random/</bugs>
     <dependencies>
-        <nextcloud min-version="28" max-version="34"/>
+        <php min-version="8.2" max-version="8.5" />
+        <nextcloud min-version="34" max-version="34" />
     </dependencies>
     <navigations>
         <navigation>
-            <id>globalrandom</id>
             <name>GLOBAL RANDOM</name>
             <route>globalrandom.page.index</route>
-            <icon>app.svg</icon>
         </navigation>
     </navigations>
 </info>
