@@ -21,6 +21,7 @@ class PageController extends Controller {
      * Nextcloud-Seite mit Vollbild-Iframe, der auf globalRandom() zeigt.
      *
      * @NoAdminRequired
+     * @NoCSRFRequired
      */
     public function index(): TemplateResponse {
         $embedUrl = $this->urlGenerator->linkToRoute('globalrandom.page.globalRandom');
