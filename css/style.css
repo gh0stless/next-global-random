@@ -7,6 +7,16 @@ body #app-content {
     overflow: hidden !important;
 }
 
+/* html/body selbst dürfen NICHT scrollen — sonst reserviert der Browser
+   eine Scrollleiste (fest ~16px), wodurch #content schmaler als der
+   Viewport wird und rechts eine sichtbare Lücke zum Hintergrund entsteht
+   (per Firefox-Inspector nachgemessen: #content war 1904px statt 1920px
+   breit, exakt die Scrollleisten-Breite). */
+html, body {
+    overflow: hidden !important;
+    height: 100%;
+}
+
 /* Nextclouds #header ist standardmäßig transparent und zeigt das
    Dashboard-Hintergrundfoto durch. --color-header-background existiert in
    dieser Nextcloud-Version nirgends im Quellcode - ein Fallback darauf
