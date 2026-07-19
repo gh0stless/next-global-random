@@ -1,18 +1,13 @@
 <?php
 
-declare(strict_types=1);
-
 namespace OCA\GlobalRandom\Controller;
 
 use OCP\AppFramework\Controller;
-use OCP\AppFramework\Http\ContentSecurityPolicy;
-use OCP\AppFramework\Http\DataDisplayResponse;
 use OCP\AppFramework\Http\TemplateResponse;
 use OCP\IRequest;
 use OCP\IURLGenerator;
 
 class PageController extends Controller {
-
     private IURLGenerator $urlGenerator;
 
     public function __construct(string $appName, IRequest $request, IURLGenerator $urlGenerator) {
@@ -21,90 +16,23 @@ class PageController extends Controller {
     }
 
     /**
-     * Gerahmte Nextcloud-Seite: Vollbild-Iframe, der auf globalRandom() zeigt.
+     * Nextcloud-Seite mit Vollbild-Iframe auf die statische global-random.html.
+     *
+     * global-random.html wird bewusst NICHT über einen eigenen Controller/Route
+     * ausgeliefert: Nextclouds CSP-Middleware erlaubt in dieser Version keine
+     * Inline-Skripte (weder ContentSecurityPolicy noch EmptyContentSecurityPolicy
+     * bieten allowInlineScript() - mehrfach nachgewiesen, siehe Git-Historie).
+     * Die Original-Datei nutzt aber Inline-<script> und onclick-Attribute.
+     * Der App-Ordner wird von Apache direkt als statische Datei ausgeliefert
+     * (an PHP/CSP vorbei, per curl bestätigt: 200 OK, kein CSP-Header),
+     * daher der direkte linkTo()-Link statt einer eigenen Route.
      *
      * @NoAdminRequired
      * @NoCSRFRequired
      */
     public function index(): TemplateResponse {
         return new TemplateResponse($this->appName, 'index', [
-            'iframeSrc' => $this->urlGenerator->linkToRoute($this->appName . '.page.globalRandom'),
+            'iframeSrc' => $this->urlGenerator->linkTo($this->appName, 'global-random.html'),
         ]);
-    }
-
-    /**
-     * Liefert global-random.html unverändert roh aus.
-     *
-     * CSP ist bewusst nur für DIESE Route geöffnet (nicht global für Nextcloud),
-     * weil das Werk auf seinem regulären Webspace ohnehin frei mit diesen
-     * Diensten spricht — hier wird dieselbe Offenheit eins zu eins nachgebildet,
-     * nicht verschärft und nicht künstlich erweitert.
-     *
-     * WICHTIG fürs Docker-Testing: Browser-Konsole beobachten. CSP-Verstöße
-     * erscheinen dort explizit ("Refused to connect/load ... because it
-     * violates the following Content Security Policy directive") — falls
-     * doch ein Dienst blockt, der hier fehlt, sofort sichtbar, nicht als
-     * mysteriöser stiller Bug.
-     *
-     * @NoAdminRequired
-     * @NoCSRFRequired
-     */
-    public function globalRandom(): DataDisplayResponse {
-        $path = __DIR__ . '/../../global-random.html';
-        $html = file_get_contents($path);
-
-        if ($html === false) {
-            return new DataDisplayResponse(
-                'global-random.html konnte nicht gelesen werden.',
-                500,
-                ['Content-Type' => 'text/plain; charset=utf-8']
-            );
-        }
-
-        $response = new DataDisplayResponse(
-            $html,
-            200,
-            ['Content-Type' => 'text/html; charset=utf-8']
-        );
-
-        $csp = new ContentSecurityPolicy();
-        $csp->allowInlineScript(true);
-        $csp->allowInlineStyle(true);
-
-        // Spotify IFrame API + eingebettete Player
-        $csp->addAllowedScriptDomain('open.spotify.com');
-        $csp->addAllowedScriptDomain('sdk.scdn.co');
-        $csp->addAllowedFrameDomain('open.spotify.com');
-        $csp->addAllowedConnectDomain('open.spotify.com');
-        $csp->addAllowedConnectDomain('api.spotify.com');
-
-        // MusicBrainz
-        $csp->addAllowedConnectDomain('musicbrainz.org');
-
-        // Wikipedia (alle Sprachsubdomains) + Wikidata/SPARQL
-        $csp->addAllowedConnectDomain('*.wikipedia.org');
-        $csp->addAllowedConnectDomain('www.wikidata.org');
-        $csp->addAllowedConnectDomain('query.wikidata.org');
-
-        // MyMemory Translation API
-        $csp->addAllowedConnectDomain('api.mymemory.translated.net');
-
-        // Open-Meteo
-        $csp->addAllowedConnectDomain('api.open-meteo.com');
-
-        // Google Fonts (falls im Hauptfile referenziert, C64-Font selbst ist base64-inline)
-        $csp->addAllowedStyleDomain('fonts.googleapis.com');
-        $csp->addAllowedFontDomain('fonts.gstatic.com');
-        $csp->addAllowedFontDomain('data:');
-
-        // Twemoji via jsDelivr
-        $csp->addAllowedScriptDomain('cdn.jsdelivr.net');
-        $csp->addAllowedImageDomain('cdn.jsdelivr.net');
-        $csp->addAllowedImageDomain('data:');
-        $csp->addAllowedImageDomain('blob:');
-
-        $response->setContentSecurityPolicy($csp);
-
-        return $response;
     }
 }

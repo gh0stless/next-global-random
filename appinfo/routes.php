@@ -9,10 +9,5 @@ return [
             'url' => '/',
             'verb' => 'GET',
         ],
-        [
-            'name' => 'page#globalRandom',
-            'url' => '/app',
-            'verb' => 'GET',
-        ],
     ],
 ];
