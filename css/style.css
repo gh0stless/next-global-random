@@ -1,26 +1,21 @@
-/* Vollflächiger Iframe: Nextclouds eigenes Content-Padding entfernen,
-   damit GLOBAL RANDOM den kompletten verfügbaren Bereich bekommt.
-
-   WICHTIG: Nextclouds eigenes #content-Regelwerk (core-CSS) gibt dem
-   Content-Bereich bewusst das Aussehen einer schwebenden, abgerundeten
-   Karte statt Vollbild:
-     margin: var(--body-container-margin);      (8px)
-     margin-top: var(--header-height);          (50px)
-     width: calc(100% - var(--body-container-margin)*2);  (-16px!)
-     height: var(--body-height);                (zieht nochmal 8px ab)
+/* Bewusste Design-Entscheidung: Nextclouds eigenes #content-Regelwerk
+   (core-CSS) gibt dem Content-Bereich das Aussehen einer schwebenden,
+   abgerundeten Karte mit Rand auf allen vier Seiten:
+     margin: var(--body-container-margin);       (8px)
+     margin-top: var(--header-height);           (50px)
+     width: calc(100% - var(--body-container-margin)*2);
+     height: var(--body-height);
      border-radius: var(--body-container-radius); (16px)
-   margin:0 allein reicht NICHT - width/height/border-radius sind eigene,
-   unabhängige Werte und ziehen weiterhin Platz ab bzw. runden die Ecken,
-   auch wenn margin überschrieben ist. Deshalb hier alle vier Eigenschaften
-   explizit zurücksetzen (per Firefox-Inspector im Regel-Panel verifiziert,
-   nicht geraten). */
+     overflow: clip;
+   Das lassen wir hier bewusst UNANGETASTET — passt gut zum GLOBAL-RANDOM-
+   Look (schwebendes Terminal-Fenster). Der Wrapper darunter füllt einfach
+   #content exakt aus (per position:absolute + inset:0), inklusive der
+   abgerundeten Ecken (durch #content's eigenes overflow:clip automatisch
+   mitgeclippt, kein eigenes border-radius am Wrapper nötig). Nur padding
+   und overflow hier zurücksetzen, falls #content das je ändert. */
 body #content,
 body #app-content {
     padding: 0 !important;
-    margin: 0 !important;
-    width: 100% !important;
-    height: calc(100% - var(--header-height)) !important;
-    border-radius: 0 !important;
     overflow: hidden !important;
 }
 
