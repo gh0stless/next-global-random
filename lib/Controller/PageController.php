@@ -22,9 +22,6 @@ class PageController extends Controller {
 
     /**
      * Gerahmte Nextcloud-Seite: Vollbild-Iframe, der auf globalRandom() zeigt.
-     *
-     * @NoAdminRequired
-     * @NoCSRFRequired
      */
     public function index(): TemplateResponse {
         return new TemplateResponse($this->appName, 'index', [
@@ -45,43 +42,14 @@ class PageController extends Controller {
      * violates the following Content Security Policy directive") — falls
      * doch ein Dienst blockt, der hier fehlt, sofort sichtbar, nicht als
      * mysteriöser stiller Bug.
-     *
-     * @NoAdminRequired
-     * @NoCSRFRequired
      */
     public function globalRandom(): DataDisplayResponse {
-        return $this->serveRawHtml('global-random.html');
-    }
-
-    /**
-     * Von global-random.html verlinkte Werkbeschreibungen (EN/DE). Werden aus
-     * demselben Grund über eine eigene, offene CSP-Route ausgeliefert wie
-     * global-random.html selbst: beide Seiten bringen eigene Inline-<script>/
-     * <style>-Blöcke mit, die über die normale Nextcloud-CSP sonst blockiert
-     * würden.
-     *
-     * @NoAdminRequired
-     * @NoCSRFRequired
-     */
-    public function description(): DataDisplayResponse {
-        return $this->serveRawHtml('description.html');
-    }
-
-    /**
-     * @NoAdminRequired
-     * @NoCSRFRequired
-     */
-    public function beschreibung(): DataDisplayResponse {
-        return $this->serveRawHtml('beschreibung.html');
-    }
-
-    private function serveRawHtml(string $filename): DataDisplayResponse {
-        $path = __DIR__ . '/../../' . $filename;
+        $path = __DIR__ . '/../../global-random.html';
         $html = file_get_contents($path);
 
         if ($html === false) {
             return new DataDisplayResponse(
-                $filename . ' konnte nicht gelesen werden.',
+                'global-random.html konnte nicht gelesen werden.',
                 500,
                 ['Content-Type' => 'text/plain; charset=utf-8']
             );
@@ -93,12 +61,6 @@ class PageController extends Controller {
             ['Content-Type' => 'text/html; charset=utf-8']
         );
 
-        $response->setContentSecurityPolicy($this->buildOpenCsp());
-
-        return $response;
-    }
-
-    private function buildOpenCsp(): ContentSecurityPolicy {
         $csp = new ContentSecurityPolicy();
         $csp->allowInlineScript(true);
         $csp->allowInlineStyle(true);
@@ -135,6 +97,8 @@ class PageController extends Controller {
         $csp->addAllowedImageDomain('data:');
         $csp->addAllowedImageDomain('blob:');
 
-        return $csp;
+        $response->setContentSecurityPolicy($csp);
+
+        return $response;
     }
 }

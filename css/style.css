@@ -13,29 +13,14 @@
 
 /* GLOBAL RANDOM braucht den vollen Content-Bereich, ohne Nextclouds
    übliches Innenpadding — das Werk bringt seine eigene C64-Terminal-Optik
-   und will randlos sitzen, nicht wie eine normale Nextcloud-Karteikarte.
+   und will randlos sitzen, nicht wie eine normale Nextcloud-Karteikarte. */
 
-   WICHTIG: In dieser Nextcloud-Version gibt es KEIN #app-content-Element
-   (nachgeprüft in core/templates/layout.user.php auf dem Server) — der
-   TemplateResponse-Inhalt landet direkt in #content:
-     <div id="content" class="app-<?php p($_['appid']) ?>">
-       ...
-       <?php print_unescaped($_['content']); ?>
-     </div>
-   Eine Regel auf #app-content trifft schlicht nichts. Deshalb hier auf das
-   echte Element #content zielen (siehe [[nextcloud-infra-hal2024]]). */
-#content {
+#app-content {
     padding: 0 !important;
-    margin: 0 !important;
-    overflow: hidden !important;
+    overflow: hidden;
 }
 
 #globalrandom-wrapper {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
     width: 100%;
     height: 100%;
 }
