@@ -1,26 +1,27 @@
-/* Nextclouds #header ist standardmäßig transparent und zeigt das
-   Dashboard-Hintergrundfoto durch. --color-header-background existiert in
-   dieser Nextcloud-Version nirgends im Quellcode - ein Fallback darauf
-   würde IMMER greifen, unabhängig vom echten Theme. Die Header-Icons
-   nutzen eine Maske mit --color-background-plain-text (berechnet aus dem
-   echten, hellen Theme-Hintergrund), daher hier bewusst die echte,
-   dazu passende Variable --color-background-plain statt eines erfundenen
-   Namens mit hartcodiertem dunklem Fallback (siehe [[nextcloud-infra-hal2024]]
-   für die volle Herleitung - derselbe Bug steckte in der jsidplay2-App). */
-#header {
-    background-color: var(--color-background-plain, var(--color-main-background)) !important;
+/* Vollflächiger Iframe: Nextclouds eigenes Content-Padding entfernen,
+   damit GLOBAL RANDOM den kompletten verfügbaren Bereich bekommt. */
+body #content,
+body #app-content {
+    padding: 0 !important;
+    margin: 0 !important;
+    overflow: hidden !important;
 }
 
-/* GLOBAL RANDOM braucht den vollen Content-Bereich, ohne Nextclouds
-   übliches Innenpadding — das Werk bringt seine eigene C64-Terminal-Optik
-   und will randlos sitzen, nicht wie eine normale Nextcloud-Karteikarte. */
-
-#app-content {
-    padding: 0 !important;
-    overflow: hidden;
+/* Der Nextcloud-Header ist auf manchen Seiten (u.a. Dashboard-Theme)
+   transparent und blendet sich mit dem Hintergrundfoto/-bild. Unser
+   Vollbild-Iframe verdrängt dieses Hintergrundbild, wodurch der Header
+   sonst nur noch Schwarz zeigt und seine Icons unsichtbar werden.
+   Deshalb hier explizit eine solide Hintergrundfarbe erzwingen. */
+#header {
+    background-color: var(--color-header-background, #1d2d44) !important;
 }
 
 #globalrandom-wrapper {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
     width: 100%;
     height: 100%;
 }
