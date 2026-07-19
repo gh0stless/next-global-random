@@ -7,13 +7,16 @@ body #app-content {
     overflow: hidden !important;
 }
 
-/* Der Nextcloud-Header ist auf manchen Seiten (u.a. Dashboard-Theme)
-   transparent und blendet sich mit dem Hintergrundfoto/-bild. Unser
-   Vollbild-Iframe verdrängt dieses Hintergrundbild, wodurch der Header
-   sonst nur noch Schwarz zeigt und seine Icons unsichtbar werden.
-   Deshalb hier explizit eine solide Hintergrundfarbe erzwingen. */
+/* Nextclouds #header ist standardmäßig transparent und zeigt das
+   Dashboard-Hintergrundfoto durch. --color-header-background existiert in
+   dieser Nextcloud-Version nirgends im Quellcode - ein Fallback darauf
+   würde IMMER greifen (dunkles Blau), unabhängig vom echten Theme, und
+   macht die (hellen) Header-Icons unlesbar. Die Header-Icons nutzen eine
+   Maske mit --color-background-plain-text (berechnet aus dem echten,
+   hellen Theme-Hintergrund), daher hier bewusst die echte, dazu passende
+   Variable --color-background-plain statt eines erfundenen Namens. */
 #header {
-    background-color: var(--color-header-background, #1d2d44) !important;
+    background-color: var(--color-background-plain, var(--color-main-background)) !important;
 }
 
 #globalrandom-wrapper {
