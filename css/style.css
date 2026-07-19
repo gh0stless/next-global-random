@@ -18,9 +18,22 @@
 #app-content {
     padding: 0 !important;
     overflow: hidden;
+    position: relative;
 }
 
+/* position:absolute + inset:0 statt nur width/height:100% — Prozent-Höhe
+   bräuchte eine explizit gesetzte (nicht auto-)Höhe am Elternelement
+   #app-content, die es ohne unser position:relative + inset:0 hier nicht
+   zuverlässig hat. Ohne das kollabiert der Wrapper auf Höhe 0, sobald
+   #app-content keine feste Höhe bekommt, und man sieht nur noch den
+   Nextcloud-Hintergrund (siehe [[nextcloud-infra-hal2024]] — dieselbe Klasse
+   von Bug wie die Header-Transparenz, nur bei der Höhe statt der Farbe).
+   Bewusst absolute statt fixed: fixed würde relativ zum Viewport ab (0,0)
+   positionieren und damit den Header verdecken, den wir gerade erst wieder
+   sichtbar gemacht haben. */
 #globalrandom-wrapper {
+    position: absolute;
+    inset: 0;
     width: 100%;
     height: 100%;
 }
