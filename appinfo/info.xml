@@ -5,7 +5,7 @@
     <name>GLOBAL RANDOM</name>
     <summary>GLOBAL RANDOM — Democracy of Sound, eingebettet in Nextcloud</summary>
     <description><![CDATA[Bettet die bestehende GLOBAL-RANDOM-Webinstallation (echter Zufall statt algorithmischer Kuratierung) unverändert per Iframe in Nextcloud ein. Reine Hülle, keine Änderung an der Original-App.]]></description>
-    <version>0.1.10</version>
+    <version>0.1.11</version>
     <licence>agpl</licence>
     <author>Andreas S.</author>
     <namespace>GlobalRandom</namespace>

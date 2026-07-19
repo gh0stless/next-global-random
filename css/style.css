@@ -19,14 +19,19 @@ body #app-content {
     background-color: var(--color-background-plain, var(--color-main-background)) !important;
 }
 
+/* Nur top/left/right/bottom:0, KEIN zusätzliches width/height:100%.
+   Bei einem absolut positionierten Element mit top+bottom+height
+   gleichzeitig gesetzt gewinnt laut CSS-Spec das explizite height,
+   bottom wird verworfen — wich height%'s Basis nur minimal von der
+   wahren verfügbaren Höhe ab, bleibt unten eine sichtbare Lücke zum
+   Nextcloud-Hintergrund. top/left/right/bottom:0 allein ist eindeutig
+   und braucht keine Prozent-Berechnung. */
 #globalrandom-wrapper {
     position: absolute;
     top: 0;
     left: 0;
     right: 0;
     bottom: 0;
-    width: 100%;
-    height: 100%;
 }
 
 #globalrandom-frame {
