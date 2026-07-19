@@ -7,7 +7,7 @@
     <description><![CDATA[Bindet die GLOBAL-RANDOM-Netzinstallation ("Democracy of Sound") in Nextcloud ein: eine self-contained Single-File-Anwendung, die echten, fairness-korrigierten Zufall gegen algorithmische Musikkuration setzt. Spielt Musik aus 247 Ländern/Territorien via MusicBrainz + Spotify, übersetzt Titel live in bis zu 87 Sprachen.
 
 Diese App ist eine reine Hülle (Iframe-Einbindung) — die eigentliche Anwendung bleibt unverändert und wird nicht durch Nextcloud selbst modifiziert.]]></description>
-    <version>0.1.4</version>
+    <version>0.1.5</version>
     <licence>AGPL-3.0-or-later</licence>
     <author>Andreas S. (gh0stless)</author>
     <namespace>GlobalRandom</namespace>

@@ -13,27 +13,29 @@
 
 /* GLOBAL RANDOM braucht den vollen Content-Bereich, ohne Nextclouds
    übliches Innenpadding — das Werk bringt seine eigene C64-Terminal-Optik
-   und will randlos sitzen, nicht wie eine normale Nextcloud-Karteikarte. */
+   und will randlos sitzen, nicht wie eine normale Nextcloud-Karteikarte.
 
-#app-content {
+   WICHTIG: In dieser Nextcloud-Version gibt es KEIN #app-content-Element
+   (nachgeprüft in core/templates/layout.user.php auf dem Server) — der
+   TemplateResponse-Inhalt landet direkt in #content:
+     <div id="content" class="app-<?php p($_['appid']) ?>">
+       ...
+       <?php print_unescaped($_['content']); ?>
+     </div>
+   Eine Regel auf #app-content trifft schlicht nichts. Deshalb hier auf das
+   echte Element #content zielen (siehe [[nextcloud-infra-hal2024]]). */
+#content {
     padding: 0 !important;
-    overflow: hidden;
-    position: relative;
+    margin: 0 !important;
+    overflow: hidden !important;
 }
 
-/* position:absolute + inset:0 statt nur width/height:100% — Prozent-Höhe
-   bräuchte eine explizit gesetzte (nicht auto-)Höhe am Elternelement
-   #app-content, die es ohne unser position:relative + inset:0 hier nicht
-   zuverlässig hat. Ohne das kollabiert der Wrapper auf Höhe 0, sobald
-   #app-content keine feste Höhe bekommt, und man sieht nur noch den
-   Nextcloud-Hintergrund (siehe [[nextcloud-infra-hal2024]] — dieselbe Klasse
-   von Bug wie die Header-Transparenz, nur bei der Höhe statt der Farbe).
-   Bewusst absolute statt fixed: fixed würde relativ zum Viewport ab (0,0)
-   positionieren und damit den Header verdecken, den wir gerade erst wieder
-   sichtbar gemacht haben. */
 #globalrandom-wrapper {
     position: absolute;
-    inset: 0;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
     width: 100%;
     height: 100%;
 }
