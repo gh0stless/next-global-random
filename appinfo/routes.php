@@ -14,5 +14,15 @@ return [
             'url' => '/app',
             'verb' => 'GET',
         ],
+        [
+            'name' => 'page#description',
+            'url' => '/description.html',
+            'verb' => 'GET',
+        ],
+        [
+            'name' => 'page#beschreibung',
+            'url' => '/beschreibung.html',
+            'verb' => 'GET',
+        ],
     ],
 ];

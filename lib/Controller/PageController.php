@@ -44,12 +44,31 @@ class PageController extends Controller {
      * mysteriöser stiller Bug.
      */
     public function globalRandom(): DataDisplayResponse {
-        $path = __DIR__ . '/../../global-random.html';
+        return $this->serveRawHtml('global-random.html');
+    }
+
+    /**
+     * Von global-random.html verlinkte Werkbeschreibungen (EN/DE). Werden aus
+     * demselben Grund über eine eigene, offene CSP-Route ausgeliefert wie
+     * global-random.html selbst: beide Seiten bringen eigene Inline-<script>/
+     * <style>-Blöcke mit, die über die normale Nextcloud-CSP sonst blockiert
+     * würden.
+     */
+    public function description(): DataDisplayResponse {
+        return $this->serveRawHtml('description.html');
+    }
+
+    public function beschreibung(): DataDisplayResponse {
+        return $this->serveRawHtml('beschreibung.html');
+    }
+
+    private function serveRawHtml(string $filename): DataDisplayResponse {
+        $path = __DIR__ . '/../../' . $filename;
         $html = file_get_contents($path);
 
         if ($html === false) {
             return new DataDisplayResponse(
-                'global-random.html konnte nicht gelesen werden.',
+                $filename . ' konnte nicht gelesen werden.',
                 500,
                 ['Content-Type' => 'text/plain; charset=utf-8']
             );
@@ -61,6 +80,12 @@ class PageController extends Controller {
             ['Content-Type' => 'text/html; charset=utf-8']
         );
 
+        $response->setContentSecurityPolicy($this->buildOpenCsp());
+
+        return $response;
+    }
+
+    private function buildOpenCsp(): ContentSecurityPolicy {
         $csp = new ContentSecurityPolicy();
         $csp->allowInlineScript(true);
         $csp->allowInlineStyle(true);
@@ -97,8 +122,6 @@ class PageController extends Controller {
         $csp->addAllowedImageDomain('data:');
         $csp->addAllowedImageDomain('blob:');
 
-        $response->setContentSecurityPolicy($csp);
-
-        return $response;
+        return $csp;
     }
 }
