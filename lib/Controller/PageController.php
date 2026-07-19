@@ -22,6 +22,9 @@ class PageController extends Controller {
 
     /**
      * Gerahmte Nextcloud-Seite: Vollbild-Iframe, der auf globalRandom() zeigt.
+     *
+     * @NoAdminRequired
+     * @NoCSRFRequired
      */
     public function index(): TemplateResponse {
         return new TemplateResponse($this->appName, 'index', [
@@ -42,6 +45,9 @@ class PageController extends Controller {
      * violates the following Content Security Policy directive") — falls
      * doch ein Dienst blockt, der hier fehlt, sofort sichtbar, nicht als
      * mysteriöser stiller Bug.
+     *
+     * @NoAdminRequired
+     * @NoCSRFRequired
      */
     public function globalRandom(): DataDisplayResponse {
         return $this->serveRawHtml('global-random.html');
@@ -53,11 +59,18 @@ class PageController extends Controller {
      * global-random.html selbst: beide Seiten bringen eigene Inline-<script>/
      * <style>-Blöcke mit, die über die normale Nextcloud-CSP sonst blockiert
      * würden.
+     *
+     * @NoAdminRequired
+     * @NoCSRFRequired
      */
     public function description(): DataDisplayResponse {
         return $this->serveRawHtml('description.html');
     }
 
+    /**
+     * @NoAdminRequired
+     * @NoCSRFRequired
+     */
     public function beschreibung(): DataDisplayResponse {
         return $this->serveRawHtml('beschreibung.html');
     }
