@@ -67,9 +67,45 @@ html, body {
     bottom: 0;
 }
 
+/* Schmale Umschalt-Leiste zwischen App/Beschreibung/Description - haelt
+   den Aufruf der Werkbeschreibungen "im Rahmen" (selber Iframe wechselt
+   die Quelle), statt sie per target="_blank" aus global-random.html
+   in einem eigenen, kontextlosen Browser-Tab aufzureissen. Bewusst NICHT
+   in global-random.html selbst geloest, damit die Datei unveraendert
+   bleibt (dieselbe Kopie laeuft auch unveraendert auf crazy-midi.de). */
+#globalrandom-nav {
+    height: 40px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 0 8px;
+    background: var(--color-main-background, #fff);
+    border-bottom: 1px solid var(--color-border, #ddd);
+}
+
+.globalrandom-nav-btn {
+    border: none;
+    background: transparent;
+    padding: 6px 12px;
+    border-radius: var(--border-radius, 4px);
+    cursor: pointer;
+    color: var(--color-text-maxcontrast, #555);
+    font-weight: normal;
+}
+
+.globalrandom-nav-btn:hover {
+    background: var(--color-background-hover, #f0f0f0);
+}
+
+.globalrandom-nav-btn.active {
+    background: var(--color-primary-element-light, #d0e5ff);
+    color: var(--color-main-text, #222);
+    font-weight: bold;
+}
+
 #globalrandom-frame {
     display: block;
     width: 100%;
-    height: 100%;
+    height: calc(100% - 40px);
     border: 0;
 }
