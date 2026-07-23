@@ -33,8 +33,6 @@ class PageController extends Controller {
     public function index(): TemplateResponse {
         return new TemplateResponse($this->appName, 'index', [
             'appSrc' => $this->urlGenerator->linkTo($this->appName, 'global-random.html'),
-            'deSrc' => $this->urlGenerator->linkTo($this->appName, 'beschreibung.html'),
-            'enSrc' => $this->urlGenerator->linkTo($this->appName, 'description.html'),
         ]);
     }
 }
