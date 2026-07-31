@@ -28,6 +28,6 @@ Standard Nextcloud app sideload: place this folder under `apps/` (or `custom_app
 
 This wrapper app (Nextcloud integration code) is licensed under **AGPL-3.0-or-later**.
 
-The embedded artwork (`global-random.html`) is licensed separately under **[CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/)** — see the [canonical repo](https://github.com/gh0stless/global-random) for details.
+The embedded artwork (`global-random.html`) is licensed separately under **[CC BY-NC-ND 4.0](https://creativecommons.org/licenses/by-nc-nd/4.0/)** — no derivatives/modifications permitted. See the [canonical repo](https://github.com/gh0stless/global-random) for details.
 
 © 2026 Andreas S.
