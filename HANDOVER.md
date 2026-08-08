@@ -82,6 +82,7 @@ Relevant, falls das Projekt je über "nur für mich und Freunde" hinauswächst:
 - **GLOBAL RANDOM selbst bleibt unangetastet** — Änderungen nur an der Hülle (Routen, Controller, Templates, CSS), nie an `global-random.html` selbst außer per Sync von der kanonischen Quelle.
 - **Nextcloud-API-Annahmen vor Umsetzung verifizieren, nicht aus Doku/Erinnerung annehmen** — die CSP-`allowInlineScript()`-Frage (Abschnitt 3) wurde genau deshalb zweimal falsch angenommen, bevor der tatsächliche statische Ausliefer-Weg stand.
 - **Version-Bump als Cache-Buster** bei jeder sichtbaren CSS/Copy-Änderung, sonst zeigt Nextcloud den alten Stand weiter an.
+- **Nach jedem `appinfo/info.xml`-Versions-Bump auf dem Server: `occ app:disable globalrandom` gefolgt von `occ app:enable globalrandom`, NICHT nur `enable` allein** — Nextcloud vergleicht bei jedem Request die Datei-Version gegen die in der DB registrierte `installed_version`; weichen sie voneinander ab, blockt es die **komplette** WebUI (alle Apps, nicht nur diese) mit "Aktualisierung erforderlich", bis sie wieder übereinstimmen. `occ app:enable` auf einer bereits aktivierten App ist ein No-Op und reconciled die Version NICHT — nur der disable→enable-Zyklus tut das. Live zweimal genau so passiert (08.08.2026), zweimal genau so gefixt. Das ist kein Core-Update (Core-Version bleibt unangetastet, `occ status` zeigt weiterhin dieselbe Nextcloud-Version) — nur die Registrierung dieser einen App wird nachgezogen.
 
 ---
 
