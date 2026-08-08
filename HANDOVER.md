@@ -1,6 +1,8 @@
 # HANDOVER — next-global-random (Nextcloud app)
 
-**Stand:** 31.07.2026. Dieses Dokument ersetzt die frühere Kette `HANDOVER-next-global-random.md` (lag im `global-random`-Repo, gehörte aber hierher) und `HANDOVER-nextcloud-app-to-vscode.md`/`...-to-vscode2.md` (Duplikat) — alle drei gelöscht, Inhalt hier konsolidiert. Beschreibt den **aktuellen Stand**, nicht die Chronologie. Details zu einzelnen Fixes stehen bei Bedarf in der Git-Historie.
+**Stand:** 08.08.2026. Dieses Dokument ersetzt die frühere Kette `HANDOVER-next-global-random.md` (lag im `global-random`-Repo, gehörte aber hierher) und `HANDOVER-nextcloud-app-to-vscode.md`/`...-to-vscode2.md` (Duplikat) — alle drei gelöscht, Inhalt hier konsolidiert. Beschreibt den **aktuellen Stand**, nicht die Chronologie. Details zu einzelnen Fixes stehen bei Bedarf in der Git-Historie.
+
+**Sync 08.08.2026:** `global-random.html`/`beschreibung.html`/`description.html` mit dem kanonischen Repo abgeglichen (57 Commits Rückstand aufgeholt — u.a. komplettes S.A.M.-Jingle/Opener/Easteregg-Rotationssystem, W:E-Intro-Schneefall-Effekt in 83 Sprachen, generalisiertes Länder-Namen-i18n, mehrere Queue/Preview-Sync-Bugfixes, Mobile-Gesture-Fix, MB-Discovery-Batch-Cap gegen thematische Cluster). Details siehe das kanonische Repo's eigenes `HANDOVER.md` (dort lokal, nicht mehr getrackt) bzw. die Commit-Historie. App-Version auf `0.1.18` gebumpt (Cache-Buster).
 
 **Verhältnis zum Hauptprojekt:** eigenständiges Spinoff, eigenes Repo (`github.com/gh0stless/next-global-random`, jetzt öffentlich). Die eingebettete `global-random.html` bleibt **unangetastet** — nur eingerahmt, nie bearbeitet. Siehe [`global-random`](https://github.com/gh0stless/global-random) für das Hauptprojekt und dessen eigenes `HANDOVER.md`.
 
@@ -33,7 +35,7 @@ Eine Nextcloud-App (`globalrandom`, App-ID), die die unveränderte GLOBAL-RANDOM
 
 ## 4. Sync-Workflow (unverändert gegenüber dem Hauptprojekt)
 
-Änderungen entstehen im kanonischen `global-random`-Repo und werden manuell mit "Sync: ..."-Commits hierher übertragen. `global-random.html`, `beschreibung.html`, `description.html` sind aktuell byte-identisch mit der kanonischen Quelle.
+Änderungen entstehen im kanonischen `global-random`-Repo und werden manuell mit "Sync: ..."-Commits hierher übertragen. `global-random.html`, `beschreibung.html`, `description.html` sind aktuell (Stand 08.08.2026) byte-identisch mit der kanonischen Quelle.
 
 ---
 

@@ -19,6 +19,7 @@ A feasibility-study wrapper, not the app itself: `global-random.html` at the rep
 | `templates/index.php` | Iframe shell |
 | `css/style.css` | Full-bleed iframe layout inside Nextcloud's normal header/nav |
 | `global-random.html` | Synced copy of the canonical app |
+| `beschreibung.html` / `description.html` | Synced project description (DE/EN) |
 
 ## Install
 
