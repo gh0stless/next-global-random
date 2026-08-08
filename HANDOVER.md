@@ -4,6 +4,8 @@
 
 **Sync 08.08.2026:** `global-random.html`/`beschreibung.html`/`description.html` mit dem kanonischen Repo abgeglichen (57 Commits Rückstand aufgeholt — u.a. komplettes S.A.M.-Jingle/Opener/Easteregg-Rotationssystem, W:E-Intro-Schneefall-Effekt in 83 Sprachen, generalisiertes Länder-Namen-i18n, mehrere Queue/Preview-Sync-Bugfixes, Mobile-Gesture-Fix, MB-Discovery-Batch-Cap gegen thematische Cluster). Details siehe das kanonische Repo's eigenes `HANDOVER.md` (dort lokal, nicht mehr getrackt) bzw. die Commit-Historie. App-Version auf `0.1.18` gebumpt (Cache-Buster).
 
+**Nachsync 08.08.2026 (2 kleine Fixes):** `global-random.html` erneut abgeglichen — zwei am selben Tag live entdeckte Artefakte nach SKIP INTRO bei leerer Queue: der Hintergrund-Pad des Players blieb sichtbar (neue Klasse `embed-wrapper-blank`, außerdem `mobileFirstPlay()` fehlte die passende Aufräum-Logik komplett), und der Schneefall aus dem Intro lief unbegrenzt weiter statt zu stoppen. App-Version auf `0.1.19` gebumpt.
+
 **Verhältnis zum Hauptprojekt:** eigenständiges Spinoff, eigenes Repo (`github.com/gh0stless/next-global-random`, jetzt öffentlich). Die eingebettete `global-random.html` bleibt **unangetastet** — nur eingerahmt, nie bearbeitet. Siehe [`global-random`](https://github.com/gh0stless/global-random) für das Hauptprojekt und dessen eigenes `HANDOVER.md`.
 
 ---
