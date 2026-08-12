@@ -2123,7 +2123,7 @@ let masterGain = null;
 /* Global volume factor for all our own Web Audio playback (tune, S.A.M. samples, jingles,
    openers, easter eggs) — 1.0 = unchanged, 0.5 = half as loud, etc. One number to tune the
    whole mix instead of re-encoding every sample. */
-const MASTER_VOLUME = 0.5;
+const MASTER_VOLUME = 0.4;
 
 async function initAudio(){
   if(tuneBuffer) return;
@@ -3255,14 +3255,17 @@ function setHdr(text){
    which is exactly the point this whole project is making. */
 function poolStats(){
   const totalPools=COUNTRIES.length+1; // +1 for the unknown pool
-  /* candidates.length alone drops to 0 every time everything currently
-     found has just been promoted into the queue (splice() removes them
-     from candidates as they move) — technically correct, but reads as a
-     confusing "reset to 0" even though nothing was actually lost, just
-     relocated. Counting queue.length too gives the honest total of
-     "candidates discovered and not yet played", regardless of which of
-     the two buckets they're currently sitting in. */
-  return {current:candidates.length+queue.length, max:totalPools*CAP};
+  /* candidates.length alone, NOT +queue.length — this used to add queue.length
+     too, on the theory that a pool-only count "reads as a confusing reset to 0"
+     the instant everything currently found gets promoted into the queue at
+     once. That reasoning missed that this header number is meant to describe
+     the SAME thing the IM POOL flag bars show (_foundSlotPct() is pool-only,
+     countryStacks-based, never queue) — summing the two in the header but not
+     in the flags meant the header total could never actually be reconciled
+     against what the flags visibly added up to (reported live). The queue
+     side isn't lost either way: setBuffer() already shows queue.length/
+     BUFFER_SIZE right next to this as its own separate fraction. */
+  return {current:candidates.length, max:totalPools*CAP};
 }
 function setBuffer(prefix=''){
   const {current,max}=poolStats();
@@ -6437,36 +6440,50 @@ function waitForTrackEnd(itemId){
 }
 
 /* ── Detect login via track duration (preview=30s, full=60s+) ── */
+/* Runs fresh on EVERY track (called from playReady()/mobileFirstPlay()), not
+   just once — a "logged in" verdict used to stick forever via an early
+   `if(isLoggedIn)return`, so a session that lost its Spotify login mid-
+   playback (cookie cleared, logged out of Spotify in another tab, etc.)
+   kept silently downgrading to preview-only tracks while "✓ logged in"
+   stayed green the whole time (reported live). Both branches below are now
+   two-way: they upgrade OR downgrade isLoggedIn depending on what THIS
+   track's actual duration shows, so the badge and the tracks it's
+   describing can never drift apart for more than one track. */
 function detectLoginStatus(){
-  if(isLoggedIn)return; // already know
   function onUpdate(e){
     const dur=(e.data?.duration??e.duration??0);
-    if(dur>60000&&!isLoggedIn){
-      isLoggedIn=true;
-      /* An EARLIER track could have already set _previewConfirmed=true below —
-         dur<=31000 alone doesn't actually prove "not logged in", it just means
-         THAT one track happened to be short (a real short song/interlude in the
-         pool is entirely possible even fully logged in). That false positive
-         used to stick forever: nothing ever cleared it, so a genuinely
-         logged-in session with one short track early on permanently lost its
-         artist/country cards (skipMetaLookups in _renderPlayingMeta()) AND its
-         full-language snow (the isMobile||_previewConfirmed check in
-         translateAll()) for the rest of the session, even though "✓ logged in"
-         correctly showed the whole time. Confirmed via a live screenshot: genre
-         card populated fine (not gated by this flag), artist/country cards
-         both silently missing. This is the one place that can prove the
-         earlier verdict wrong, so it's the one place that un-sets it. */
-      _previewConfirmed=false;
+    if(dur>60000){
+      if(!isLoggedIn){
+        isLoggedIn=true;
+        /* An EARLIER track could have already set _previewConfirmed=true below —
+           dur<=31000 alone doesn't actually prove "not logged in", it just means
+           THAT one track happened to be short (a real short song/interlude in the
+           pool is entirely possible even fully logged in). That false positive
+           used to stick forever: nothing ever cleared it, so a genuinely
+           logged-in session with one short track early on permanently lost its
+           artist/country cards (skipMetaLookups in _renderPlayingMeta()) AND its
+           full-language snow (the isMobile||_previewConfirmed check in
+           translateAll()) for the rest of the session, even though "✓ logged in"
+           correctly showed the whole time. Confirmed via a live screenshot: genre
+           card populated fine (not gated by this flag), artist/country cards
+           both silently missing. This is the one place that can prove the
+           earlier verdict wrong, so it's the one place that un-sets it. */
+        _previewConfirmed=false;
+        $('login-status').textContent='✓ logged in';
+        $('login-status').style.color='var(--green)';
+        console.log('Spotify logged in detected — full tracks available');
+      }
       try{EC.removeListener('playback_update',onUpdate);}catch(_){}
-      $('login-status').textContent='✓ logged in';
-      $('login-status').style.color='var(--green)';
-      console.log('Spotify logged in detected — full tracks available');
-    }else if(dur>0&&dur<=31000&&!isLoggedIn){
+    }else if(dur>0&&dur<=31000){
+      if(isLoggedIn){
+        isLoggedIn=false;
+        console.warn('Spotify login/session lost mid-playback (cookie cleared, logged out elsewhere?) — falling back to preview-only');
+      }
       // Preview mode confirmed
-      try{EC.removeListener('playback_update',onUpdate);}catch(_){}
       $('login-status').textContent='preview only';
       $('login-status').style.color='var(--dim)';
       _previewConfirmed=true;
+      try{EC.removeListener('playback_update',onUpdate);}catch(_){}
     }
   }
   try{EC.addListener('playback_update',onUpdate);}catch(_){}
