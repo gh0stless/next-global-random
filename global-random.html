@@ -161,7 +161,13 @@ main,#fixed-footer{position:relative;z-index:1;max-width:640px;margin:0 auto;pad
   body #genre-card{display:none}
   body #label-country{display:none}
   body #country-applet{display:none}
-  body #bubbles{display:none}
+  /* #bubbles (the falling-snow container) used to be hidden here too —
+     removed along with the matching translateAll() restriction
+     (17.10.2026, NEW RANDOM fork: explicitly asked to come back on
+     mobile). Reported live as "kein Schneefall in mobile" even after
+     that JS fix: this plain CSS display:none was a second, independent
+     gate on the exact same effect, still hiding it regardless of
+     translateAll() actually producing real words now. */
   /* Desktop runs an app-shell: body is pinned to exactly 100vh with
      overflow-y:hidden, #scroll-area does the actual scrolling internally,
      and #fixed-footer (stats line + donate banner + hint) stays glued to
@@ -931,10 +937,8 @@ const MYMEMORY_EMAIL='info@crazy-midi.de';
       random among whichever countries currently have ≥1 candidate. A
       country with 1 candidate has the same odds as one with 6.
 
-   5. SESSION CAP — independent of the pool cap, a country that's already
-      been queued SESSION_CAP times this session gets hard-rejected from
-      new discovery, so one country can't dominate playback over hours
-      even as its pool candidates keep getting refreshed.
+   5. (Session cap removed 17.10.2026 — see discoverCandidates(). The
+      CAP/FIFO ring buffer per country is the only pool limit now.)
 
    6. SECOND RANDOM LAYER AT PLAY TIME — the queue (target size
       BUFFER_SIZE=3) fills via points 1-5 above, but which queued item
@@ -1946,6 +1950,14 @@ const CAPITALS = {
 const HISTORICAL_CAPITALS = {
   SU:{name:'Moscow',wiki:'Soviet_Union',lat:55.7558,lon:37.6173},
   YU:{name:'Belgrade',wiki:'Yugoslavia',lat:44.7866,lon:20.4489},
+  /* MusicBrainz's own codes for these two, NOT their withdrawn ISO codes
+     (that would be DD/CS) — MB tags its East Germany area (1949-1990) as
+     XG and Czechoslovakia (1918-1992) as XC, confirmed via MB's area API.
+     Same treatment as SU/YU above. The other two MB X-codes in gr_tracks
+     stay unknown on purpose: XE is "Europe", XW is "[Worldwide]" — not
+     states, no single wiki article or capital that would be honest here. */
+  XG:{name:'East Berlin',wiki:'East_Germany',lat:52.5200,lon:13.4050},
+  XC:{name:'Prague',wiki:'Czechoslovakia',lat:50.0755,lon:14.4378},
 };
 
 /* Country code → German display name (for the DE wiki/weather panel) */
@@ -1962,14 +1974,14 @@ const COUNTRY_DE = {AF:'Afghanistan',AL:'Albanien',DZ:'Algerien',AD:'Andorra',AO
   IO:'Britisches Territorium im Indischen Ozean',NF:'Norfolkinsel',
   PN:'Pitcairninseln',SH:'St. Helena',WF:'Wallis und Futuna',
   /* Historical, not in COUNTRIES — see HISTORICAL_CAPITALS */
-  SU:'Sowjetunion',YU:'Jugoslawien'};
+  SU:'Sowjetunion',YU:'Jugoslawien',XG:'DDR',XC:'Tschechoslowakei'};
 
 /* Country code -> Arabic display name, fetched via tools/test.html (batch MyMemory
    run over VPN to dodge the dev machine's exhausted quota). Six entries MyMemory had
    no translation for (fell back to English) and one wrong match (Cook Islands got the
    Marshall Islands translation) were corrected by hand against ar.wikipedia.org. */
 const COUNTRY_AR={CN:'الصين',JP:'اليابان',KR:'كوريا الجنوبية',IN:'الهند',BD:'بنغلاديش',VN:'فيتنام',TH:'تايلاند',ID:'إندونيسيا',MY:'ماليزيا',PH:'الفلبين',MN:'منغوليا',NP:'نيبال',PK:'باكستان',EG:'مصر',SA:'المملكة العربية السعودية',AE:'دولة الإمارات العربية المتحدة',MA:'المغرب',LB:'لبنان',JO:'الأردن',DZ:'الجزائر',TN:'تونس',IQ:'العراق',SY:'سوريا',LY:'ليبيا',YE:'اليمن',OM:'عُمان',KW:'الكويت',QA:'قطر',BH:'البحرين',SD:'السودان',IR:'إيران',IL:'إسرائيل',TR:'تركيا',AZ:'أذربيجان',KZ:'كازاخستان',AM:'أرمينيا',GE:'جورجيا',FR:'فرنسا',ES:'إسبانيا',BR:'البرازيل',IT:'إيطاليا',RO:'رومانيا',HT:'هاييتي',DE:'ألمانيا',NL:'هولندا',SE:'السويد',NO:'النرويج',DK:'الدنمارك',IS:'آيسلندا',ZA:'جنوب أفريقيا',RU:'روسيا',PL:'بولندا',CZ:'جمهورية التشيك',SK:'سلوفاكيا',UA:'أوكرانيا',BG:'بلغاريا',HR:'كرواتيا',RS:'صربيا',SI:'سلوفينيا',MK:'مقدونيا الشمالية',GR:'اليونان',HU:'المجر',FI:'فنلندا',EE:'استونيا',LV:'لاتفيا',LT:'ليتوانيا',AL:'ألبانيا',MT:'مالطا',IE:'أيرلندا',GB:'المملكة المتحدة',KE:'كينيا',NG:'نيجيريا',ET:'إثيوبيا',SO:'الصومال',US:'الولايات المتحدة الأمريكية',MX:'المكسيك',AR:'الأرجنتين',CO:'كولومبيا',PE:'البيرو',CL:'تشيلي',VE:'فنزويلا',PT:'البرتغال',CA:'كندا',AU:'أستراليا',NZ:'نيوزيلندا',AT:'النمسا',CH:'سويسرا',BE:'بلجيكا',BY:'بيلاروسيا',TW:'تايوان',HK:'هونغ كونغ',MO:'ماكاو',PS:'دولة فلسطين',XK:'كوسوفو',PR:'بورتوريكو',VA:'مدينة الفاتيكان',GL:'الأرض الخضراء',FO:'جزر فارو',EH:'الصحراء الغربية',GI:'جبل طارق',BM:'برمودا',KY:'جزر كايمان',IM:'جزيرة آيل أوف مان',GG:'جيرنسي',JE:'جيرسي',AS:'ساموا الأمريكية',GU:'غوام',VI:'جزر فرجن التابعة للولايات المتحدة',NC:'كاليدونيا الجديدة',PF:'بولينيزيا الفرنسية',RE:'ريونيون',MQ:'مارتينيك',GP:'غوادلوب',GF:'جويانا الفرنسية',CK:'جزر كوك',NU:'نيوي',AX:'جزر آلاند',AD:'أندورا',AF:'أفغانستان',AG:'أنتيغوا وبربودا',AO:'أنغولا',BA:'البوسنة والهرسك',BB:'باربادوس',BF:'بوركينا فاسو',BI:'بوروندي',BJ:'بنين',BN:'بروناي',BO:'بوليفيا',BS:'جزر البهاماز',BT:'بوتان',BW:'بوتسوانا',BZ:'بيليز',CD:'جمهورية الكونغو الديمقراطية',CF:'جمهورية أفريقيا الوسطى',CG:'جمهورية الكونغو',CI:'ساحل العاج',CM:'الكاميرون',CR:'كوستاريكا',CU:'كوبا',CV:'الرأس الأخضر',CY:'قبرص',DJ:'جيبوتي',DM:'دومينيكا',DO:'جمهورية الدومينيكان',EC:'الإكوادور',ER:'إريتريا',FJ:'فيجي',FM:'ولايات ميكرونيسيا المتحدة',GA:'الغابون',GD:'غرينادا',GH:'غانا',GM:'غامبيا',GN:'غينيا',GQ:'غينيا الاستوائية',GT:'غواتيمالا',GW:'غينيا بيساو',GY:'غيانا',HN:'الهندوراس',JM:'جامايكا',KG:'قيرغيزستان',KH:'كمبوديا',KI:'كيريباتي',KM:'جزر القمر',KN:'سانت كيتس ونيفيس',KP:'كوريا الشمالية',LA:'لاوس',LC:'سان لوسيا',LI:'ليختنشتاين',LK:'سري لانكا',LR:'ليبيريا',LS:'ليسوتو',LU:'لوكسمبورغ',MC:'موناكو',MD:'مولدوفا',ME:'الجبل الأسود',MG:'مدغشقر',MH:'جزر مارشال',ML:'مالي',MM:'ميانمار',MR:'موريتانيا',MU:'موريشيوس',MV:'جزر المالديف',MW:'ملاوي',MZ:'موزمبيق',NA:'ناميبيا',NE:'النيجر',NI:'نيكاراغوا',NR:'ناورو',PA:'بنما',PG:'بابوا غينيا الجديدة',PW:'بالاو',PY:'باراغواي',RW:'رواندا',SB:'جزر سليمان',SC:'سيشل',SG:'سنغافورة',SL:'سيراليون',SM:'سان مارينو',SN:'السنغال',SR:'سورينام',SS:'جنوب السودان',ST:'سان تومي وبرينسيبي',SV:'السلفادور',SZ:'إيسواتيني',TD:'تشاد',TG:'توغو',TJ:'طاجيكستان',TL:'تيمور الشرقية',TM:'تركمانستان',TO:'تونغا',TT:'ترينداد وتوباجو',TV:'توفالو',TZ:'تنزانيا',UG:'أوغندا',UY:'الأوروغواي',UZ:'أوزباكستان',VC:'سانت فنسنت والغرينادين',VU:'فانواتو',WS:'ساموا',ZM:'زامبيا',ZW:'زيمبابوي',CW:'كوراساو',YT:'مايوت',AI:'أنغويلا',AW:'أروبا',AQ:'أنتاركتيكا',PM:'سان بيار وميكلون',MF:'جماعة القديس مارتن',VG:'جزر فيرجن البريطانية',SX:'سينت مارتن',FK:'جزر فوكلاند',TC:'جزر توركس وكايكوس',MS:'مونتسيرات',TK:'توكيلاو',BL:'سانت بارتيليمي',BQ:'جزر المملكة الهولندية الكاريبية',MP:'جزر ماريانا الشمالية',CC:'جزر كوكوس (كيلينج)',UM:'جزر الولايات المتحدة الصغيرة النائية',BV:'جزيرة بوفيت',CX:'جزيرة كريسماس',HM:'جزيرة هيرد وجزر ماكدونالد',IO:'إقليم المحيط الهندي البريطاني',NF:'جزيرة نورفولك',PN:'جزر بيتكيرن',SH:'سانت هيلينا وأسينشين وتريستان دا كونا',WF:'واليس وفوتونا',
-SU:'الاتحاد السوفيتي',YU:'يوغوسلافيا'};
+SU:'الاتحاد السوفيتي',YU:'يوغوسلافيا',XG:'ألمانيا الشرقية',XC:'تشيكوسلوفاكيا'};
 
 /* Registry of static country-name dicts, keyed by uiLang. Add a new language here once
    its full set has been fetched via test.html — languages NOT in this registry fall back
@@ -5214,9 +5226,8 @@ function detectSilentTrack(itemId){
       hits abandon the rest of that batch early (saves wasted MB calls).
    4. Per-country pool cap (CAP, ~20% of POOL_TARGET): once a country's pool
       is full, new finds evict the OLDEST entry (FIFO) instead of being
-      discarded — pool always holds the freshest discoveries. A separate,
-      higher session-cap (SESSION_CAP) hard-rejects a country once it's
-      been queued too many times over the whole session.
+      discarded — pool always holds the freshest discoveries. (The old
+      separate session cap is gone, see discoverCandidates().)
    5. promoteFromPool() draws queue slots via TRUE random pick among
       countries that currently have ≥1 candidate — not round-robin.
    6. allCountriesCapped() gates the tight while-loop inside ONE
@@ -5512,15 +5523,12 @@ async function discoverCandidates(){
         const word = cleanTitle(found.title);
         if(!word || word.length<2) continue;
 
-        /* Session cap is a hard reject — prevents a country from being
-           replayed too often across the WHOLE session regardless of pool
-           freshness. This one stays "discard the new find". */
-        const SESSION_CAP=CAP*3;
-        const sessionCount=countSeen[code]||0;
-        if(code && sessionCount>=SESSION_CAP){
-          console.log(`%c[cap] ${code} session:${sessionCount}/${SESSION_CAP} — skipping`,'color:#e11d48');
-          continue;
-        }
+        /* No session cap anymore (removed 17.10.2026): it hard-rejected new
+           finds for a country already queued CAP*3 times — a per-country
+           fairness rule from the old country-first model, and it had also
+           stopped counting correctly (_drawNextTrack()'s winners/losers
+           never go through _queueItem(), where countSeen is incremented).
+           The CAP/FIFO ring buffer below stays. */
 
         const cand = {id:found.id, title:found.title, word, code, histCode, recId:found.recId, artist:found.artist};
 
@@ -5614,30 +5622,40 @@ async function discoverCandidates(){
    fetches exactly one row per call (default n=1, see its own history).
    Everything below this point mirrors discoverCandidates()'s per-candidate
    acceptance logic (country whitelist, HISTORICAL_CAPITALS carve-out,
-   title/length checks, session cap, CAP/FIFO eviction, flag bar) so a
-   candidate ends up in EXACTLY the same shape and the EXACT same
+   title/length checks, CAP/FIFO ring buffer, flag bar) so a candidate
+   ends up in EXACTLY the same shape and the EXACT same
    candidates/countryStacks/_unknownPool structures either way — just
    without the batch-clumping machinery this single-row path doesn't need.
    Never throws: a failed fetch here just means this particular draw runs
    on whatever was already in the pool, same as before this fork. */
+/* Keeps fetching until a VALID title arrives (not already played, not
+   already in the pool or the queue, title passes the skip/length checks)
+   — a rejected title used to just return null, leaving that draw without
+   a fresh card. Bounded by FETCH_ONE_MAX_TRIES so a weird streak can't
+   hammer our own endpoint indefinitely (netcup rate-limited us once,
+   13.10.2026); an empty response means the fetch itself failed, and
+   retrying straight away wouldn't help, so that stops immediately. */
+const FETCH_ONE_MAX_TRIES=10;
 async function fetchOneCandidate(){
   try{
-    const rows=await grRandomSearch();
-    const f=rows[0];
-    if(!f || played.has(f.id) || candidates.some(c=>c.id===f.id)) return null;
+    let f=null, word=null;
+    for(let attempt=0; attempt<FETCH_ONE_MAX_TRIES; attempt++){
+      const rows=await grRandomSearch();
+      const r=rows[0];
+      if(!r) return null; // fetch failed / no data — don't retry
+      if(played.has(r.id) || candidates.some(c=>c.id===r.id) || queue.some(q=>q.id===r.id)) continue;
+      if(shouldSkip(r.title)) continue;
+      const w=cleanTitle(r.title);
+      if(!w || w.length<2) continue;
+      f=r; word=w;
+      break;
+    }
+    if(!f) return null;
 
     const found={id:f.id, title:f.title, recId:null, artist:f.artist||'', release:null};
     const code=(f.country && isRealCountryCode(f.country)) ? f.country : null;
     const rawUpper=f.country?.toUpperCase();
     const histCode=(!code && rawUpper && HISTORICAL_CAPITALS[rawUpper]) ? rawUpper : null;
-
-    if(shouldSkip(found.title)) return null;
-    const word=cleanTitle(found.title);
-    if(!word || word.length<2) return null;
-
-    const SESSION_CAP=CAP*3;
-    const sessionCount=countSeen[code]||0;
-    if(code && sessionCount>=SESSION_CAP) return null;
 
     const cand={id:found.id, title:found.title, word, code, histCode, recId:found.recId, artist:found.artist};
 
@@ -6743,8 +6761,8 @@ function _pickRandomFromQueue(){
 async function _drawNextTrack(){
   const _t0=Date.now();
   const _nachziehMs=playDiceSound(); // "nachziehen" — a fresh card is being drawn into contention
-  const fresh=await fetchOneCandidate();
-  if(fresh) _removeFromPool(fresh); // committed to this draw either way — win or lose, no longer "available" in the general pool
+  const fresh=await fetchOneCandidate(); // fetch goes through the country ring buffer like any other
+  if(fresh) _removeFromPool(fresh); // drawn into contention — out of its country pool, which compacts
   /* Stays .empty (dashed, hidden iframe) for the WHOLE duration of this
      sound, no matter how fast fetchOneCandidate() resolves — reported
      live: the card used to pop in as soon as the fetch finished, which
@@ -6789,14 +6807,24 @@ async function _drawNextTrack(){
      suspense beat left, not an accident. */
   const winner=contenders[Math.floor(Math.random()*contenders.length)];
   const losers=contenders.filter(c=>c!==winner);
+  /* Shuffle before handing out slots (17.10.2026) — requested directly:
+     "echtes Shuffle simulieren... auch die 3. Position ändern kann".
+     The old version always preserved each loser's EXISTING slot where
+     possible, so the two preview cards effectively never swapped places
+     with each other — only the winner ever "moved" (into the main
+     player). A real shuffle should let the losers trade positions too,
+     not just sit still forever whenever they don't win. Fisher-Yates on
+     a 2-3 element array, cheap either way. */
+  for(let i=losers.length-1;i>0;i--){
+    const j=Math.floor(Math.random()*(i+1));
+    [losers[i],losers[j]]=[losers[j],losers[i]];
+  }
   const takenSlots=new Set();
   queue.length=0;
   losers.forEach(l=>{
-    if(l.slot==null||takenSlots.has(l.slot)){
-      let s=0; while(takenSlots.has(s)) s++;
-      l.slot=s;
-    }
-    takenSlots.add(l.slot);
+    let s=0; while(takenSlots.has(s)) s++;
+    l.slot=s;
+    takenSlots.add(s);
     queue.push(l);
   });
   _syncPreviewSlots(); // immediately — see the comment above for why this moved here
